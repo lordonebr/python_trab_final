@@ -14,6 +14,7 @@ class Receita(models.Model):
         ('B', 'Boleto'),
         ('C', 'Crédito'),
         ('D', 'Débito'),
+        ('M', 'Dinheiro'),
         ('P', 'Depósito'),
         ('O', 'Outros')
     )

@@ -3,6 +3,7 @@ from django.urls import path
 from .views import index as iv
 from .views import despesa as dv
 from .views import receita as rv
+from .views import relatorio as relv
 
 urlpatterns = [
     path('', iv.index, name="index"),
@@ -11,5 +12,9 @@ urlpatterns = [
     path('despesa/', dv.despesa, name="despesa"),
 
     path('receita/nova', rv.nova, name="receita_nova"),
-    path('receita/', rv.receita, name="receita")
+    path('receita/', rv.receita, name="receita"),
+
+    path('relatorio/despesas', relv.despesas, name="relatorio_despesas"),
+    path('relatorio/despesas/filtro', relv.despesasFiltro, name="relatorio_despesas_filtro"),
+    #path('relatorio/receitas', relv.receitas, name="relatorio_receitas")
 ]
