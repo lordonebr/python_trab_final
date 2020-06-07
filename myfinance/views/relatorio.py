@@ -31,6 +31,7 @@ def despesasFiltro(request):
 
     return render(request, 'relatorioDespesas.html', context)
 
+
 @require_http_methods(["POST"])    
 @csrf_exempt
 def receitasFiltro(request):
@@ -40,6 +41,7 @@ def receitasFiltro(request):
     context = GetReceitaContext(receitasPendentes, dataFiltro)
 
     return render(request, 'relatorioReceitas.html', context)
+
 
 def GetDespesaContext(despesasPendentes, dateMax):
     valorTotal = 0
@@ -59,6 +61,7 @@ def GetDespesaContext(despesasPendentes, dateMax):
                 'dateMaxBr' : dateMaxBr}
 
     return context
+
 
 def GetReceitaContext(receitasPendentes, dateMax):
     valorTotal = 0

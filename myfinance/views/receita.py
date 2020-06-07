@@ -65,4 +65,4 @@ def receita(request):
     context = {
             'message' : 'Receita cadastrada com sucesso!'
     }
-    return render(request, 'index.html', context)
+    return render(request, 'receita.html', context)

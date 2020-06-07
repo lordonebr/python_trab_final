@@ -65,4 +65,4 @@ def despesa(request):
     context = {
             'message' : 'Despesa cadastrada com sucesso!'
     }
-    return render(request, 'index.html', context)
+    return render(request, 'despesa.html', context)
