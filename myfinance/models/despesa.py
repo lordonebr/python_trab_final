@@ -5,7 +5,7 @@ class Despesa(models.Model):
         ('AG', 'Água'),
         ('AL', 'Alimentação'),
         ('AG', 'Aluguel'),
-        ('EN', 'Eneria'),
+        ('EN', 'Energia'),
         ('LA', 'Lazer'),
         ('OU', 'Outros'),
         ('TE', 'Telecomunicações'),

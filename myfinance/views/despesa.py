@@ -46,7 +46,6 @@ def nova(request):
 @csrf_exempt
 def despesa(request):
     valor = request.POST['valor']
-    print(f"""valor = {valor}""")
 
     dataPagamento = request.POST['data_pagamento']
     if(dataPagamento == ""):
