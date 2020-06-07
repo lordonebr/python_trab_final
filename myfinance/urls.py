@@ -16,5 +16,6 @@ urlpatterns = [
 
     path('relatorio/despesas', relv.despesas, name="relatorio_despesas"),
     path('relatorio/despesas/filtro', relv.despesasFiltro, name="relatorio_despesas_filtro"),
-    #path('relatorio/receitas', relv.receitas, name="relatorio_receitas")
+    path('relatorio/receitas', relv.receitas, name="relatorio_receitas"),
+    path('relatorio/receitas/filtro', relv.receitasFiltro, name="relatorio_receitas_filtro")
 ]

@@ -47,13 +47,13 @@ def nova(request):
 def receita(request):
     valor = request.POST['valor']
 
-    dataExpectativa = request.POST['data_expectativa']
-    if(dataExpectativa == ""):
-        dataExpectativa = None
+    dataRecebimento = request.POST['data_recebimento']
+    if(dataRecebimento == ""):
+        dataRecebimento = None
 
     receita = Receita(classificacao=request.POST['classificacao'],
-                      data_expectativa=dataExpectativa,
-                      data_recebimento=request.POST['data_recebimento'],
+                      data_expectativa=request.POST['data_expectativa'],
+                      data_recebimento=dataRecebimento,
                       descricao=request.POST['descricao'],
                       formaRecebimento=request.POST['formaRecebimento'],
                       situacao=request.POST['situacao'],

@@ -25,8 +25,8 @@ class Receita(models.Model):
     )
     
     classificacao = models.CharField(max_length=2, choices=CLASSIFICACAO_CHOICES, default='OU')
-    data_expectativa = models.DateField(null=True)
-    data_recebimento = models.DateField(null=False)
+    data_expectativa = models.DateField(null=False)
+    data_recebimento = models.DateField(null=True)
     descricao = models.CharField(max_length=255)
     formaRecebimento = models.CharField(max_length=1, choices=FORMA_RECEBIMENTO_CHOICES, default='O')
     situacao = models.CharField(max_length=2, choices=SITUACAO_CHOICES, default='AR')
