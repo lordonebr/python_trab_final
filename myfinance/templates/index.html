@@ -6,21 +6,46 @@
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
         <title>Gerenciamento financeiro</title>
+        <script>
+            function showAlert(msg){
+                if(msg !== ''){
+                    $("#statusAlert b").text(msg);
+
+                    $("#statusAlert").show();
+                    $("#statusAlert").fadeTo(2100, 500).slideUp(500, function(){
+                        $("#statusAlert").slideUp(500);
+                    }); 
+                }
+            }
+        </script>
     </head>
-    <body>
+    <body
+        {% if message %}
+            onload = "showAlert('{{message}}')"
+        {% endif %}>
         <div class="container">
             <h1>Gerenciamento financeiro</h1>
             <h6>Feito em Python</h6>
 
-            <ul class="nav justify-content-center">
+            <ul class="nav justify-content-center nav-pills">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/people/cadastro"><h4>Nova despesa</h4></a>
+                    <a class="nav-link" href="/despesa/nova"><h4>Nova despesa</h4></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/people/listar"><h4>Nova receita</h4></a>
                 </li>
             </ul>
+
+            <div class="alert alert-success alert-dismissible fade show" id="statusAlert" role="alert" style="display:none;" >
+                <span><b>teste</b></span>
+                <button type="button" id="btnCloseWarning" class="close"  aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
         </div>
     </body>
 </html>
