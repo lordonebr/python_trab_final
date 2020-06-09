@@ -3,6 +3,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
 from ..models import Conf, Despesa, Receita
+import operator
 
 @require_http_methods(["GET", "POST"])
 @csrf_exempt
@@ -45,29 +46,11 @@ def initFluxo(saldoInicial):
         return {}
 
     fluxo = {}
-    resultReceitas = Receita.objects.all().order_by('-data_expectativa')
-    for receita in resultReceitas:
-        periodo = '%s/%s' % (receita.data_expectativa.strftime("%m"), receita.data_expectativa.strftime("%Y"))
-        if periodo not in fluxo:
-            fluxo = createFluxoVazio(fluxo, periodo)
-        
-        if(receita.situacao == "PR"):
-            fluxo[periodo]['saldoRecebido'] = fluxo[periodo]['saldoRecebido'] + receita.valor
-        else:
-            fluxo[periodo]['saldoReceber'] = fluxo[periodo]['saldoReceber'] + receita.valor
-
-    resultDespesas = Despesa.objects.all().order_by('-data_vencimento')
-    for despesa in resultDespesas:
-        periodo = '%s/%s' % (despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%Y"))
-        if periodo not in fluxo:
-            fluxo = createFluxoVazio(fluxo, periodo)
-
-        if(despesa.situacao == "PG"):
-            fluxo[periodo]['saldoPago'] = fluxo[periodo]['saldoPago'] + despesa.valor
-        else:
-            fluxo[periodo]['saldoPagar'] = fluxo[periodo]['saldoPagar'] + despesa.valor
-
+    fluxo = setResumoReceitas(fluxo)
+    fluxo = setResumoDespesas(fluxo)
     fluxo = setSaldoIniFinLuc(fluxo, saldoInicial)
+    fluxo = setReceitasOrder(fluxo)
+    fluxo = setDespesasOrder(fluxo)
 
     return fluxo
 
@@ -79,7 +62,38 @@ def createFluxoVazio(fluxo, periodo):
                         'saldoPago' : 0,
                         'saldoInicial' : 0,
                         'saldoFinal' : 0,
-                        'lucratividade' : 0}
+                        'lucratividade' : 0,
+                        "receitas" : [],
+                        "despesas" : []}
+    return fluxo
+
+def setResumoReceitas(fluxo):
+    resultReceitas = Receita.objects.all().order_by('-data_expectativa')
+    for receita in resultReceitas:
+        periodo = '%s/%s' % (receita.data_expectativa.strftime("%m"), receita.data_expectativa.strftime("%Y"))
+        if periodo not in fluxo:
+            fluxo = createFluxoVazio(fluxo, periodo)
+        
+        if(receita.situacao == "PR"):
+            fluxo[periodo]['saldoRecebido'] = fluxo[periodo]['saldoRecebido'] + receita.valor
+        else:
+            fluxo[periodo]['saldoReceber'] = fluxo[periodo]['saldoReceber'] + receita.valor
+
+    return fluxo
+
+
+def setResumoDespesas(fluxo):
+    resultDespesas = Despesa.objects.all().order_by('-data_vencimento')
+    for despesa in resultDespesas:
+        periodo = '%s/%s' % (despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%Y"))
+        if periodo not in fluxo:
+            fluxo = createFluxoVazio(fluxo, periodo)
+
+        if(despesa.situacao == "PG"):
+            fluxo[periodo]['saldoPago'] = fluxo[periodo]['saldoPago'] + despesa.valor
+        else:
+            fluxo[periodo]['saldoPagar'] = fluxo[periodo]['saldoPagar'] + despesa.valor
+
     return fluxo
 
 def setSaldoIniFinLuc(fluxo, saldoInicial):
@@ -96,4 +110,24 @@ def setSaldoIniFinLuc(fluxo, saldoInicial):
         fluxo[periodo]['lucratividade'] = fluxo[periodo]['saldoFinal'] - fluxo[periodo]['saldoInicial']
         saldoFinalMesAnterior = fluxo[periodo]['saldoFinal']
     
+    return fluxo
+
+
+def setReceitasOrder(fluxo):
+    receitas = list(Receita.objects.all())
+    receitas.sort(key=operator.methodcaller('get_classificacao_display'))
+    for receita in receitas:
+        periodo = '%s/%s' % (receita.data_expectativa.strftime("%m"), receita.data_expectativa.strftime("%Y"))
+        fluxo[periodo]['receitas'].append(receita)
+
+    return fluxo
+
+
+def setDespesasOrder(fluxo):
+    despesas = list(Despesa.objects.all())
+    despesas.sort(key=operator.methodcaller('get_classificacao_display'))
+    for despesa in despesas:
+        periodo = '%s/%s' % (despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%Y"))
+        fluxo[periodo]['despesas'].append(despesa)
+
     return fluxo

@@ -76,6 +76,14 @@
                     <h5 class="">Saldo inicial: R$ {{values.saldoInicial}} </h5>
                     <h5 class="">Saldo final: R$ {{values.saldoFinal}} </h5>
                     <h5 class="">Lucratividade: R$ {{values.lucratividade}} </h5>
+                    <h5 class="">RECEITAS</h5>
+                    {% for receita in values.receitas %}
+                        <h6>{{receita.get_classificacao_display}}</h6>
+                    {% endfor %}
+                    <h5 class="">DESPESAS</h5>
+                    {% for despesa in values.despesas %}
+                        <h6>{{despesa.get_classificacao_display}}</h6>
+                    {% endfor %}
                 {% endfor %}
             {% endif %}  
         </div>
