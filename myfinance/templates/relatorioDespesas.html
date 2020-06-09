@@ -32,14 +32,14 @@
             </ul>
 
             <h4 class="mt-4">Relatório de contas pendentes</h4>
-                <form action="/relatorio/despesas/filtro" method="post" class="mt-5 mb-5">
-                    <div class="form-row mt-2">
-                        <label for="inputDate" class="col-sm-2 font-weight-bold">Data vencimento: </label>
-                        <input type="date" class="form-control-sm col-sm-2" id="inputDate" name="data_filtro" value="{{dateMax}}" required>
-                    
-                        <button type="submit" class="btn btn-dark btn-sm ml-2 col-sm-1">Filtrar</button>
-                    </div>
-                </form>
+            <form action="/relatorio/despesas/filtro" method="post" class="mt-5 mb-5">
+                <div class="form-row mt-2">
+                    <label for="inputDate" class="col-sm-2 font-weight-bold">Data vencimento: </label>
+                    <input type="date" class="form-control-sm col-sm-2" id="inputDate" name="data_filtro" value="{{dateMax}}" required>
+                
+                    <button type="submit" class="btn btn-dark btn-sm ml-2 col-sm-1">Filtrar</button>
+                </div>
+            </form>
             {% if despesas %}
                 <button type="button" class="btn btn-dark mb-1 mt-1">
                     Quantidade <span class="badge badge-light">{{ despesas|length }}</span>
