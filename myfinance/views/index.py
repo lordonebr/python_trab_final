@@ -10,13 +10,16 @@ import operator
 def index(request):
     if(request.method=="GET"):
         saldoInicial = loadSaldoInicial()
+        saldoAtual = saldoInicial
 
         fluxo = initFluxo(saldoInicial)
-        print(f"""fluxo = {fluxo}""")
+        for periodo in fluxo:
+            saldoAtual = fluxo[periodo]['saldoFinal']
+            break
 
         # iterate fluxo
         # https://stackoverflow.com/questions/16616260/django-template-context-for-loop-traversal
-        context = {'getSaldoInicial' : saldoInicial, 'fluxo' : fluxo}
+        context = {'getSaldoInicial' : saldoInicial, 'fluxo' : fluxo, 'saldoAtual' : saldoAtual}
         #print(f"""context= {context}""")
         return render(request, 'index.html', context)
     elif(request.method=="POST"):
@@ -118,6 +121,12 @@ def setReceitasOrder(fluxo):
     receitas.sort(key=operator.methodcaller('get_classificacao_display'))
     for receita in receitas:
         periodo = '%s/%s' % (receita.data_expectativa.strftime("%m"), receita.data_expectativa.strftime("%Y"))
+        dtExpectativa = '%s/%s/%s' % (receita.data_expectativa.strftime("%d"), receita.data_expectativa.strftime("%m"), receita.data_expectativa.strftime("%Y"))
+        receita.data_expectativa = dtExpectativa
+        if(receita.data_recebimento):
+            dtrecebimento = '%s/%s/%s' % (receita.data_recebimento.strftime("%d"), receita.data_recebimento.strftime("%m"), receita.data_recebimento.strftime("%Y"))
+            receita.data_recebimento = dtrecebimento
+
         fluxo[periodo]['receitas'].append(receita)
 
     return fluxo
@@ -128,6 +137,12 @@ def setDespesasOrder(fluxo):
     despesas.sort(key=operator.methodcaller('get_classificacao_display'))
     for despesa in despesas:
         periodo = '%s/%s' % (despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%Y"))
+        dtVencimento = '%s/%s/%s' % (despesa.data_vencimento.strftime("%d"), despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%Y"))
+        despesa.data_vencimento = dtVencimento
+        if(despesa.data_pagamento):
+            dtpagamento = '%s/%s/%s' % (despesa.data_pagamento.strftime("%d"), despesa.data_pagamento.strftime("%m"), despesa.data_pagamento.strftime("%Y"))
+            despesa.data_pagamento = dtpagamento
+        
         fluxo[periodo]['despesas'].append(despesa)
 
     return fluxo

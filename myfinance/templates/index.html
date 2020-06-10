@@ -67,25 +67,141 @@
                     </div>
                 </form>
             {% else %}
+                <button type="button" class="btn btn-dark text-white font-weight-bold mt-5">
+                    Saldo atual R$ <span class="badge badge-light">
+                            {{saldoAtual}}
+                        </span>
+                </button>
+
+                <h4 class="mt-3 mb-4">Clique em cima de um título de um mês para esconder/mostrar as informações</h4>
+                
+                
                 {% for route, values in fluxo.items %}
-                    <h4 class="mt-5 font-weight-bold"> {{route}} </h4>
-                    <h5 class="">Saldo a receber: R$ {{values.saldoReceber}} </h5>
-                    <h5 class="">Saldo recebido: R$ {{values.saldoRecebido}} </h5>
-                    <h5 class="">Saldo a pagar: R$ {{values.saldoPagar}} </h5>
-                    <h5 class="">Saldo pago: R$ {{values.saldoPago}} </h5>
-                    <h5 class="">Saldo inicial: R$ {{values.saldoInicial}} </h5>
-                    <h5 class="">Saldo final: R$ {{values.saldoFinal}} </h5>
-                    <h5 class="">Lucratividade: R$ {{values.lucratividade}} </h5>
-                    <h5 class="">RECEITAS</h5>
-                    {% for receita in values.receitas %}
-                        <h6>{{receita.get_classificacao_display}}</h6>
-                    {% endfor %}
-                    <h5 class="">DESPESAS</h5>
-                    {% for despesa in values.despesas %}
-                        <h6>{{despesa.get_classificacao_display}}</h6>
-                    {% endfor %}
+                    <div class="mb-3" id="accordion{{forloop.counter}}">
+                        <div class="card">
+                            <div id="heading{{forloop.counter}}"
+                                {% if values.lucratividade > 0 %}  
+                                    class="card-header bg-success"
+                                {% else %}
+                                    class="card-header bg-danger"
+                                {% endif %} 
+                                >
+                                <button class="btn btn-block btn-lg text-white" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapse{{forloop.counter}}">
+                                    <span class="font-weight-bold">{{route}} (Lucratividade: R$ {{values.lucratividade}})</span>
+                                </button>
+                            </div>
+                            <div id="collapse{{forloop.counter}}" class="collapse show" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion{{forloop.counter}}">
+                                <div class="card-body">
+                                    <button type="button" class="btn btn-warning text-dark  font-weight-bold mb-3">
+                                        Saldo final do mês R$ <span class="badge badge-light">{{ values.saldoFinal }}</span>
+                                    </button>
+                                    <div class="jumbotron p-4">
+                                        <h3>RECEITAS</h3>
+                                        <button type="button" class="btn btn-success text-dark font-weight-bold mb-1 mt-1">
+                                            Valor recebido R$ <span class="badge badge-light">{{ values.saldoRecebido|floatformat:2 }}</span>
+                                        </button>
+                                        <button type="button" class="btn btn-success text-dark font-weight-bold mb-1 mt-1">
+                                            Valor a receber R$ <span class="badge badge-light">{{ values.saldoReceber|floatformat:2 }}</span>
+                                        </button>
+                                        <table class="table table-bordered table-hover table-sm table-responsive-xl">
+                                            <thead>
+                                                <tr class="bg-success"> 
+                                                    <th scope="col" style="width: 12%">Data expectativa</th>
+                                                    <th scope="col" style="width: 12%">Classificação</th>
+                                                    <th scope="col" style="width: 15%">Forma de recebimento</th>
+                                                    <th scope="col" style="width: 16%">Descrição</th>
+                                                    <th scope="col" style="width: 15%">Data recebimento</th>
+                                                    <th scope="col" style="width: 12%">Situação</th>
+                                                    <th scope="col" style="width: 10%">Valor (R$)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for receita in values.receitas %}
+                                                    {% if receita.situacao == 'PR' %}  
+                                                    <tr class="table-success">
+                                                    {% else %}
+                                                    <tr>
+                                                    {% endif %}  
+                                                        <td>{{receita.data_expectativa}}</td>
+                                                        <td>{{receita.get_classificacao_display}}</td>
+                                                        <td>{{receita.get_formaRecebimento_display}}</td>
+                                                        <td>{{receita.descricao}}</td>
+                                                        <td>
+                                                            {% if receita.data_recebimento %}   
+                                                                {{receita.data_recebimento}}
+                                                            {% endif %}      
+                                                        </td>
+                                                        <td>{{receita.get_situacao_display}}</td>
+                                                        <td>{{receita.valor}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-dark text-white  font-weight-bold mb-1 mt-1">
+                                            Quantidade <span class="badge badge-light">{{ values.receitas|length }}</span>
+                                        </button>
+                                    </div>
+                                    <div class="jumbotron p-4">
+                                        <h3>DESPESAS</h3>
+                                        <button type="button" class="btn btn-danger text-dark font-weight-bold mb-1 mt-1">
+                                            Valor pago R$ <span class="badge badge-light">{{ values.saldoPago|floatformat:2 }}</span>
+                                        </button>
+                                        <button type="button" class="btn btn-danger text-dark font-weight-bold mb-1 mt-1">
+                                            Valor a pagar R$ <span class="badge badge-light">{{ values.saldoPagar|floatformat:2 }}</span>
+                                        </button>
+                                        <table class="table table-bordered table-hover table-sm table-responsive-xl">
+                                            <thead>
+                                                <tr class="bg-danger"> 
+                                                    <th scope="col" style="width: 12%">Data vencimento</th>
+                                                    <th scope="col" style="width: 12%">Classificação</th>
+                                                    <th scope="col" style="width: 15%">Forma de pagamento</th>
+                                                    <th scope="col" style="width: 16%">Descrição</th>
+                                                    <th scope="col" style="width: 15%">Data pagamento</th>
+                                                    <th scope="col" style="width: 12%">Situação</th>
+                                                    <th scope="col" style="width: 10%">Valor (R$)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for despesa in values.despesas %}
+                                                    {% if despesa.situacao == 'PG' %}  
+                                                    <tr class="table-danger">
+                                                    {% else %}
+                                                    <tr>
+                                                    {% endif %}  
+                                                        <td>{{despesa.data_vencimento}}</td>
+                                                        <td>{{despesa.get_classificacao_display}}</td>
+                                                        <td>{{despesa.get_formaPagamento_display}}</td>
+                                                        <td>{{despesa.descricao}}</td>
+                                                        <td>
+                                                            {% if despesa.data_pagamento %}   
+                                                                {{despesa.data_pagamento}}
+                                                            {% endif %}      
+                                                        </td>
+                                                        <td>{{despesa.get_situacao_display}}</td>
+                                                        <td>{{despesa.valor}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-dark text-white font-weight-bold mb-1 mt-1">
+                                            Quantidade <span class="badge badge-light">{{ values.despesas|length }}</span>
+                                        </button>
+                                    </div>
+                                    <button type="button" class="btn btn-warning text-dark  font-weight-bold">
+                                        Saldo inicial do mês R$ <span class="badge badge-light">{{ values.saldoInicial }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
             {% endif %}  
         </div>
+
+        <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!--script src="http://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 </html>
