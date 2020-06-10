@@ -66,6 +66,7 @@ def createFluxoVazio(fluxo, periodo):
                         'saldoInicial' : 0,
                         'saldoFinal' : 0,
                         'lucratividade' : 0,
+                        'saldoPrevisto' : 0,
                         "receitas" : [],
                         "despesas" : []}
     return fluxo
@@ -112,6 +113,7 @@ def setSaldoIniFinLuc(fluxo, saldoInicial):
         fluxo[periodo]['saldoFinal'] = fluxo[periodo]['saldoInicial'] + fluxo[periodo]['saldoRecebido'] - fluxo[periodo]['saldoPago']
         fluxo[periodo]['lucratividade'] = fluxo[periodo]['saldoFinal'] - fluxo[periodo]['saldoInicial']
         saldoFinalMesAnterior = fluxo[periodo]['saldoFinal']
+        fluxo[periodo]['saldoPrevisto'] = fluxo[periodo]['saldoFinal'] + fluxo[periodo]['saldoReceber'] - fluxo[periodo]['saldoPagar']
     
     return fluxo
 

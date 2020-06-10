@@ -75,7 +75,6 @@
 
                 <h4 class="mt-3 mb-4">Clique em cima de um título de um mês para esconder/mostrar as informações</h4>
                 
-                
                 {% for route, values in fluxo.items %}
                     <div class="mb-3" id="accordion{{forloop.counter}}">
                         <div class="card">
@@ -92,17 +91,41 @@
                             </div>
                             <div id="collapse{{forloop.counter}}" class="collapse show" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion{{forloop.counter}}">
                                 <div class="card-body">
-                                    <button type="button" class="btn btn-warning text-dark  font-weight-bold mb-3">
+                                    <button type="button" class="btn btn-warning text-dark font-weight-bold mb-3">
                                         Saldo final do mês R$ <span class="badge badge-light">{{ values.saldoFinal }}</span>
+                                    </button>
+                                    <div class="row ml-1 mb-2">
+                                        <div class="card" style="width: 18rem;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Fluxo realizado</h5>
+                                                <button type="button" class="btn btn-success text-dark font-weight-bold mb-1 mt-1">
+                                                    Valor recebido R$ <span class="badge badge-light">{{ values.saldoRecebido|floatformat:2 }}</span>
+                                                </button>
+                                                <button type="button" class="btn btn-danger text-dark font-weight-bold mb-1 mt-1">
+                                                    Valor pago R$ <span class="badge badge-light">{{ values.saldoPago|floatformat:2 }}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card ml-2" style="width: 18rem;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Fluxo previsto</h5>
+                                                <button type="button" class="btn btn-success text-dark font-weight-bold mb-1 mt-1">
+                                                    Valor a receber R$ <span class="badge badge-light">{{ values.saldoReceber|floatformat:2 }}</span>
+                                                </button>
+                                                <button type="button" class="btn btn-danger text-dark font-weight-bold mb-1 mt-1">
+                                                    Valor a pagar R$ <span class="badge badge-light">{{ values.saldoPagar|floatformat:2 }}</span>
+                                                </button>
+                                                <button type="button" class="btn btn-warning text-dark font-weight-bold mb-1 mt-1">
+                                                    Saldo previsto R$ <span class="badge badge-light">{{ values.saldoPrevisto|floatformat:2 }}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-warning text-dark font-weight-bold mt-1 mb-3">
+                                        Saldo inicial do mês R$ <span class="badge badge-light">{{ values.saldoInicial }}</span>
                                     </button>
                                     <div class="jumbotron p-4">
                                         <h3>RECEITAS</h3>
-                                        <button type="button" class="btn btn-success text-dark font-weight-bold mb-1 mt-1">
-                                            Valor recebido R$ <span class="badge badge-light">{{ values.saldoRecebido|floatformat:2 }}</span>
-                                        </button>
-                                        <button type="button" class="btn btn-success text-dark font-weight-bold mb-1 mt-1">
-                                            Valor a receber R$ <span class="badge badge-light">{{ values.saldoReceber|floatformat:2 }}</span>
-                                        </button>
                                         <table class="table table-bordered table-hover table-sm table-responsive-xl">
                                             <thead>
                                                 <tr class="bg-success"> 
@@ -143,12 +166,6 @@
                                     </div>
                                     <div class="jumbotron p-4">
                                         <h3>DESPESAS</h3>
-                                        <button type="button" class="btn btn-danger text-dark font-weight-bold mb-1 mt-1">
-                                            Valor pago R$ <span class="badge badge-light">{{ values.saldoPago|floatformat:2 }}</span>
-                                        </button>
-                                        <button type="button" class="btn btn-danger text-dark font-weight-bold mb-1 mt-1">
-                                            Valor a pagar R$ <span class="badge badge-light">{{ values.saldoPagar|floatformat:2 }}</span>
-                                        </button>
                                         <table class="table table-bordered table-hover table-sm table-responsive-xl">
                                             <thead>
                                                 <tr class="bg-danger"> 
@@ -187,9 +204,6 @@
                                             Quantidade <span class="badge badge-light">{{ values.despesas|length }}</span>
                                         </button>
                                     </div>
-                                    <button type="button" class="btn btn-warning text-dark  font-weight-bold">
-                                        Saldo inicial do mês R$ <span class="badge badge-light">{{ values.saldoInicial }}</span>
-                                    </button>
                                 </div>
                             </div>
                         </div>
