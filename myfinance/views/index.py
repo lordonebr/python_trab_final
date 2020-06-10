@@ -43,7 +43,7 @@ def loadSaldoInicial():
 
     return saldoInicial
 
-
+# inicializa e adiciona as informações do fluxo de caixa, com as informações de todos os meses
 def initFluxo(saldoInicial):
     if(saldoInicial == None):
         return {}
@@ -52,12 +52,13 @@ def initFluxo(saldoInicial):
     fluxo = setResumoReceitas(fluxo)
     fluxo = setResumoDespesas(fluxo)
     fluxo = setSaldoIniFinLuc(fluxo, saldoInicial)
-    fluxo = setReceitasOrder(fluxo)
     fluxo = setDespesasOrder(fluxo)
+    fluxo = setReceitasOrder(fluxo)
+    fluxo = setSaldoAcumulado(fluxo, saldoInicial)
 
     return fluxo
 
-
+# inicializa o fluxo de um mês vazio
 def createFluxoVazio(fluxo, periodo):
     fluxo[periodo] = {  'saldoReceber' : 0, 
                         'saldoRecebido' : 0, 
@@ -71,6 +72,7 @@ def createFluxoVazio(fluxo, periodo):
                         "despesas" : []}
     return fluxo
 
+# recupera as seguintes informações do mês: saldo recebido, saldo a receber
 def setResumoReceitas(fluxo):
     resultReceitas = Receita.objects.all().order_by('-data_expectativa')
     for receita in resultReceitas:
@@ -85,7 +87,7 @@ def setResumoReceitas(fluxo):
 
     return fluxo
 
-
+# recupera as seguintes informações do mês: saldo pago, saldo a pagar
 def setResumoDespesas(fluxo):
     resultDespesas = Despesa.objects.all().order_by('-data_vencimento')
     for despesa in resultDespesas:
@@ -100,6 +102,7 @@ def setResumoDespesas(fluxo):
 
     return fluxo
 
+# recupera as seguintes informações do mês: saldo inicial, saldo final, lucratividade, saldo previsto
 def setSaldoIniFinLuc(fluxo, saldoInicial):
     setSaldoInicial = False
     saldoFinalMesAnterior = 0
@@ -117,7 +120,7 @@ def setSaldoIniFinLuc(fluxo, saldoInicial):
     
     return fluxo
 
-
+# coloca as receitas em ordem por classificação
 def setReceitasOrder(fluxo):
     receitas = list(Receita.objects.all())
     receitas.sort(key=operator.methodcaller('get_classificacao_display'))
@@ -133,7 +136,7 @@ def setReceitasOrder(fluxo):
 
     return fluxo
 
-
+# coloca as despesas em ordem por classificação
 def setDespesasOrder(fluxo):
     despesas = list(Despesa.objects.all())
     despesas.sort(key=operator.methodcaller('get_classificacao_display'))
@@ -146,5 +149,20 @@ def setDespesasOrder(fluxo):
             despesa.data_pagamento = dtpagamento
         
         fluxo[periodo]['despesas'].append(despesa)
+
+    return fluxo
+
+def setSaldoAcumulado(fluxo, saldoInicial):
+    valorAcumulado = saldoInicial
+    for periodo in reversed(fluxo):
+        print(f"""periodo= {periodo}""")
+        for despesa in reversed(fluxo[periodo]['despesas']):
+            if(despesa.situacao == "PG"):
+                valorAcumulado = valorAcumulado - despesa.valor
+                despesa.saldoAcumulado = valorAcumulado
+        for receita in reversed(fluxo[periodo]['receitas']):
+            if(receita.situacao == "PR"):
+                valorAcumulado = valorAcumulado + receita.valor
+                receita.saldoAcumulado = valorAcumulado
 
     return fluxo
