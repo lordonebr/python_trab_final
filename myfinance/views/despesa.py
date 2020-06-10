@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from datetime import date
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 from ..models import Despesa
 
@@ -66,3 +67,21 @@ def despesa(request):
             'message' : 'Despesa cadastrada com sucesso!'
     }
     return render(request, 'despesa.html', context)
+
+
+@require_http_methods(["PUT", "DELETE"])    
+@csrf_exempt
+def despesaOp(request, id_despesa):
+    if(request.method=="PUT"):
+        print(f"""PUT ok""")
+        return JsonResponse({"success" : True})
+    elif(request.method=="DELETE"):
+        jsonReturn = {"success" : False}
+        try:
+            despesa = Despesa.objects.get(id=id_despesa)
+            despesa.delete()
+            jsonReturn = {"success" : True}
+        except ObjectDoesNotExist:
+            print(f"""Despesa não existe!""")
+        
+        return JsonResponse(jsonReturn)

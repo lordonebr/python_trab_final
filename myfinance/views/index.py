@@ -34,7 +34,6 @@ def index(request):
         print(f"""context= {context}""")
         return render(request, 'index.html', context)
 
-
 def loadSaldoInicial():
     saldoInicial = None
     searchSaldoInicial = Conf.objects.all()
@@ -155,7 +154,6 @@ def setDespesasOrder(fluxo):
 def setSaldoAcumulado(fluxo, saldoInicial):
     valorAcumulado = saldoInicial
     for periodo in reversed(fluxo):
-        print(f"""periodo= {periodo}""")
         for despesa in reversed(fluxo[periodo]['despesas']):
             if(despesa.situacao == "PG"):
                 valorAcumulado = valorAcumulado - despesa.valor

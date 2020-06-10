@@ -10,9 +10,11 @@ urlpatterns = [
 
     path('despesa/nova', dv.nova, name="despesa_nova"),
     path('despesa/', dv.despesa, name="despesa"),
+    path('despesa/<int:id_despesa>/', dv.despesaOp, name="despesaOp"),
 
     path('receita/nova', rv.nova, name="receita_nova"),
     path('receita/', rv.receita, name="receita"),
+    path('receita/<int:id_receita>/', rv.receitaOp, name="receitaOp"),
 
     path('relatorio/despesas', relv.despesas, name="relatorio_despesas"),
     path('relatorio/despesas/filtro', relv.despesasFiltro, name="relatorio_despesas_filtro"),

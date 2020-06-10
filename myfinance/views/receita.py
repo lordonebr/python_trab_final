@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from datetime import date
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 from ..models import Receita
 
@@ -52,12 +53,12 @@ def receita(request):
         dataRecebimento = None
 
     receita = Receita(classificacao=request.POST['classificacao'],
-                      data_expectativa=request.POST['data_expectativa'],
-                      data_recebimento=dataRecebimento,
-                      descricao=request.POST['descricao'],
-                      formaRecebimento=request.POST['formaRecebimento'],
-                      situacao=request.POST['situacao'],
-                      valor=valor
+                    data_expectativa=request.POST['data_expectativa'],
+                    data_recebimento=dataRecebimento,
+                    descricao=request.POST['descricao'],
+                    formaRecebimento=request.POST['formaRecebimento'],
+                    situacao=request.POST['situacao'],
+                    valor=valor
                     )
 
     receita.save()
@@ -66,3 +67,21 @@ def receita(request):
             'message' : 'Receita cadastrada com sucesso!'
     }
     return render(request, 'receita.html', context)
+       
+
+@require_http_methods(["PUT", "DELETE"])    
+@csrf_exempt
+def receitaOp(request, id_receita):
+    if(request.method=="PUT"):
+        print(f"""PUT ok""")
+        return JsonResponse({"success" : True})
+    elif(request.method=="DELETE"):
+        jsonReturn = {"success" : False}
+        try:
+            receita = Receita.objects.get(id=id_receita)
+            receita.delete()
+            jsonReturn = {"success" : True}
+        except ObjectDoesNotExist:
+            print(f"""Receita não existe!""")
+        
+        return JsonResponse(jsonReturn)
