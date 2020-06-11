@@ -7,18 +7,62 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..models import Despesa
 
-@require_http_methods(["GET"])
-def nova(request):
+# GET: abre uma página para criar uma despesa
+# POST: cria no banco uma nova despesa baseado nos dados do form
+@require_http_methods(["GET", "POST"])   
+@csrf_exempt
+def despesa(request):
+    if(request.method=="GET"):
+        context = criaContextNovaDespesa()
+        return render(request, 'despesa.html', context)
+    elif(request.method=="POST"):
+        salvaNovaDespesa(request)
+        context = criaContextNovaDespesa()
+        context["message"] = 'Despesa cadastrada com sucesso!'
+        return render(request, 'despesa.html', context)
 
-    dtToday = '%s-%s-%s' % (date.today().strftime("%Y"), date.today().strftime("%m"), date.today().strftime("%d"))
-    despesa = Despesa(classificacao='OU',
-                      data_pagamento='',
-                      data_vencimento=dtToday,
-                      descricao='',
-                      formaPagamento='O',
-                      situacao='AP',
-                      valor=''
-                    )
+
+# GET: abre uma página para editar a despesa de ID = id_despesa
+# POST: atualiza no banco a despesa de ID = id_despesa baseado nos dados do form
+# DELETE: deleta do banco a despesa de ID = id_despesa, e retorna um JSON
+@require_http_methods(["GET", "POST", "DELETE"])  
+@csrf_exempt
+def despesaOp(request, id_despesa):
+    despesa = None
+    try:
+        despesa = Despesa.objects.get(id=id_despesa)
+    except ObjectDoesNotExist:
+        print(f"""Despesa não existe!""")
+
+    if(request.method=="GET"):
+        context = {}
+        if(despesa):
+            dtVencimento = '%s-%s-%s' % (despesa.data_vencimento.strftime("%Y"), despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%d"))
+            despesa.data_vencimento = dtVencimento
+            if(despesa.data_pagamento):
+                dtPagamento = '%s-%s-%s' % (despesa.data_pagamento.strftime("%Y"), despesa.data_pagamento.strftime("%m"), despesa.data_pagamento.strftime("%d"))
+                despesa.data_pagamento = dtPagamento
+            
+            context = initContextDespesa(despesa)
+
+        return render(request, 'despesa.html', context)
+    elif(request.method=="POST"):
+        context = criaContextNovaDespesa()
+        if(despesa):
+            atualizaDespesa(request, id_despesa)
+            context["message"] = 'Despesa atualizada com sucesso!'
+            
+        return render(request, 'despesa.html', context)
+    elif(request.method=="DELETE"):
+        jsonReturn = {"success" : False}
+        if(despesa):
+            despesa.delete()
+            jsonReturn = {"success" : True}
+        
+        return JsonResponse(jsonReturn)
+
+# inicializa o context vazio
+def initContextDespesa(despesa):
     context = { 
         'despesa' : despesa,
         'classificacoes' : [],
@@ -40,13 +84,25 @@ def nova(request):
     for field, value in fieldsSituacoes:
         itemSituacao = {"key" : field, "value" : value}
         context["situacoes"].append(itemSituacao)
+    
+    return context
 
-    return render(request, 'despesa.html', context)
+# cria o context para exibir na página de nova despesa
+def criaContextNovaDespesa():
+    dtToday = '%s-%s-%s' % (date.today().strftime("%Y"), date.today().strftime("%m"), date.today().strftime("%d"))
+    despesa = Despesa(classificacao='OU',
+                      data_pagamento='',
+                      data_vencimento=dtToday,
+                      descricao='',
+                      formaPagamento='O',
+                      situacao='AP',
+                      valor=''
+                    )
+    context = initContextDespesa(despesa)
+    return context
 
-
-@require_http_methods(["POST"])    
-@csrf_exempt
-def despesa(request):
+# salva as informações da nova despesa
+def salvaNovaDespesa(request):
     valor = request.POST['valor']
 
     dataPagamento = request.POST['data_pagamento']
@@ -64,25 +120,22 @@ def despesa(request):
 
     despesa.save()
 
-    context = {
-            'message' : 'Despesa cadastrada com sucesso!'
-    }
-    return render(request, 'despesa.html', context)
+# atualiza as informações de uma despesa existente
+def atualizaDespesa(request, id_despesa):
+    valor = request.POST['valor']
 
+    dataPagamento = request.POST['data_pagamento']
+    if(dataPagamento == ""):
+        dataPagamento = None
 
-@require_http_methods(["PUT", "DELETE"])    
-@csrf_exempt
-def despesaOp(request, id_despesa):
-    if(request.method=="PUT"):
-        print(f"""PUT ok""")
-        return JsonResponse({"success" : True})
-    elif(request.method=="DELETE"):
-        jsonReturn = {"success" : False}
-        try:
-            despesa = Despesa.objects.get(id=id_despesa)
-            despesa.delete()
-            jsonReturn = {"success" : True}
-        except ObjectDoesNotExist:
-            print(f"""Despesa não existe!""")
-        
-        return JsonResponse(jsonReturn)
+    despesa = Despesa(id=id_despesa,
+                      classificacao=request.POST['classificacao'],
+                      data_pagamento=dataPagamento,
+                      data_vencimento=request.POST['data_vencimento'],
+                      descricao=request.POST['descricao'],
+                      formaPagamento=request.POST['formaPagamento'],
+                      situacao=request.POST['situacao'],
+                      valor=valor
+                    )
+
+    despesa.save()

@@ -57,7 +57,7 @@
                     <a class="nav-link active" href="/"><h4>Fluxo de caixa</h4></a>
                 </li>
                 <li class="nav-item border">
-                    <a class="nav-link" href="/despesa/nova"><h4>Nova despesa</h4></a>
+                    <a class="nav-link" href="/despesa/"><h4>Nova despesa</h4></a>
                 </li>
                 <li class="nav-item border">
                     <a class="nav-link" href="/receita/"><h4>Nova receita</h4></a>
@@ -263,12 +263,19 @@
                                                             </td>
                                                             {% endif %}  
                                                             <td>
-                                                                <button class="btn btn-outline-primary btn-light btn-sm" title="Edita a despesa">
-                                                                    <span class="iconify" data-icon="el:pencil" style="width: 16px; height: 16px;"></span>
-                                                                </button>
-                                                                <button class="btn btn-outline-danger btn-light btn-sm" title="Deleta a despesa" onclick="deleteDespesa('{{despesa.id}}')">
-                                                                    <span class="iconify" data-icon="octicon:trashcan" style="width: 16px; height: 16px;"></span>
-                                                                </button>
+                                                                <div class="row ml-1">
+                                                                    <form action="/despesa/{{despesa.id}}" method="get" class="">
+                                                                        <div class="form-row">
+                                                                            <button class="btn btn-outline-primary btn-light btn-sm" title="Edita a despesa" type='submit'>
+                                                                                <span class="iconify" data-icon="el:pencil" style="width: 16px; height: 16px;"></span>
+                                                                            </button>
+                                                                        </div>
+                                                                    </form>
+
+                                                                    <button class="btn btn-outline-danger btn-light btn-sm ml-2" title="Deleta a despesa" onclick="deleteDespesa('{{despesa.id}}')">
+                                                                        <span class="iconify" data-icon="octicon:trashcan" style="width: 16px; height: 16px;"></span>
+                                                                    </button>
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     {% endfor %}

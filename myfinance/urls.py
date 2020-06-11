@@ -8,7 +8,6 @@ from .views import relatorio as relv
 urlpatterns = [
     path('', iv.index, name="index"),
 
-    path('despesa/nova', dv.nova, name="despesa_nova"),
     path('despesa/', dv.despesa, name="despesa"),
     path('despesa/<int:id_despesa>/', dv.despesaOp, name="despesaOp"),
 

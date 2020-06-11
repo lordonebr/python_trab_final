@@ -121,7 +121,7 @@ def salvaNovaReceita(request):
 
     receita.save()
 
-# atualiza as informações de uma receita existente receita
+# atualiza as informações de uma receita existente
 def atualizaReceita(request, id_receita):
     valor = request.POST['valor']
 

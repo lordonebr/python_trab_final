@@ -31,20 +31,24 @@
             <h6>Feito em Python</h6>
 
             <ul class="nav justify-content-center nav-pills">
-                <li class="nav-item border">
-                    <a class="nav-link" href="/"><h4>Fluxo de caixa</h4></a>
+                <li class="nav-item">
+                    <a class="nav-link border" href="/"><h4>Fluxo de caixa</h4></a>
                 </li>
-                <li class="nav-item border">
-                    <a class="nav-link active" href="/despesa/nova"><h4>Nova despesa</h4></a>
+                <li class="nav-item">
+                    <a class="nav-link 
+                    {% if despesa and not despesa.id %}  
+                    active
+                    {% endif %} 
+                    border" href="/despesa/"><h4>Nova despesa</h4></a>
                 </li>
-                <li class="nav-item border">
-                    <a class="nav-link" href="/receita/"><h4>Nova receita</h4></a>
+                <li class="nav-item">
+                    <a class="nav-link border" href="/receita/"><h4>Nova receita</h4></a>
                 </li>
-                <li class="nav-item border">
-                    <a class="nav-link" href="/relatorio/despesas"><h4>Contas a pagar</h4></a>
+                <li class="nav-item">
+                    <a class="nav-link border" href="/relatorio/despesas"><h4>Contas a pagar</h4></a>
                 </li>
-                <li class="nav-item border">
-                    <a class="nav-link" href="/relatorio/receitas"><h4>Contas a receber</h4></a>
+                <li class="nav-item">
+                    <a class="nav-link border" href="/relatorio/receitas"><h4>Contas a receber</h4></a>
                 </li>
             </ul>
 
@@ -55,74 +59,94 @@
                 </button>
             </div>
 
-            <h4 class="mt-4">Preencha os dados abaixo para cadastrar uma nova despesa</h4>
-            <div class="border rounded p-3 mb-5">
-                <form action="/despesa/" method="post" class="mt-3">
-                    <div class="border rounded p-3">
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label for="inputValor" class="font-weight-bold">Valor (R$)</label>
-                                <input type="number" step='0.01' placeholder='0.00' class="form-control" id="inputValor" name="valor" value="{{despesa.valor}}" required>
+            {% if despesa %}  
+                {% if despesa.id %}  
+                    <h4 class="mt-4">Preencha os dados abaixo para editar a despesa</h4>
+                {% else %}
+                    <h4 class="mt-4">Preencha os dados abaixo para cadastrar uma nova despesa</h4>
+                {% endif %} 
+                <div class="border rounded p-3 mb-5">
+                    <form 
+                        {% if despesa.id %}  
+                            action="/despesa/{{despesa.id}}/"
+                        {% else %}
+                            action="/despesa/"
+                        {% endif %} 
+                        method="post" class="mt-3">
+                        <div class="border rounded p-3">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="inputValor" class="font-weight-bold">Valor (R$)</label>
+                                    <input type="number" step='0.01' placeholder='0.00' class="form-control" id="inputValor" name="valor" value="{{despesa.valor}}" required>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputDescricao" class="font-weight-bold">Descrição</label>
+                                    <input type="text" class="form-control" id="inputDescricao" name="descricao" value="{{despesa.descricao}}">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="selectClassificacao" class="font-weight-bold">Classificação</label>
+                                    <select class="form-control" id="selectClassificacao" name="classificacao">
+                                        {% for item in classificacoes %}
+                                            <option 
+                                                {% if item.key == despesa.classificacao  %}
+                                                    selected
+                                                {% endif %}
+                                                value="{{item.key}}">{{item.value}}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputDescricao" class="font-weight-bold">Descrição</label>
-                                <input type="text" class="form-control" id="inputDescricao" name="descricao" value="{{despesa.descricao}}">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="selectClassificacao" class="font-weight-bold">Classificação</label>
-                                <select class="form-control" id="selectClassificacao" name="classificacao">
-                                    {% for item in classificacoes %}
-                                        <option 
-                                            {% if item.key == despesa.classificacao  %}
-                                                selected
-                                            {% endif %}
-                                            value="{{item.key}}">{{item.value}}
-                                        </option>
-                                    {% endfor %}
-                                </select>
+                            <div class="form-row mt-2">
+                                <div class="form-group col-md-3">
+                                    <label for="inputDtVencimento" class="font-weight-bold">Data de vencimento</label>
+                                    <input type="date" class="form-control" id="inputDtVencimento" name="data_vencimento" value="{{despesa.data_vencimento}}">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="selectFormaPagamento" class="font-weight-bold">Forma de pagamento</label>
+                                    <select class="form-control" id="selectFormaPagamento" name="formaPagamento">
+                                        {% for item in formasPagamento %}
+                                            <option 
+                                                {% if item.key == despesa.formaPagamento  %}
+                                                    selected
+                                                {% endif %}
+                                                value="{{item.key}}">{{item.value}}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="selectSituacao" class="font-weight-bold">Situação</label>
+                                    <select class="form-control" id="selectSituacao" name="situacao">
+                                        {% for item in situacoes %}
+                                            <option 
+                                                {% if item.key == despesa.situacao  %}
+                                                    selected
+                                                {% endif %}
+                                                value="{{item.key}}">{{item.value}}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputDtPagamento" class="font-weight-bold">Data de pagamento</label>
+                                    <input type="date" class="form-control" id="inputDtPagamento" name="data_pagamento" value="{{despesa.data_pagamento}}">
+                                </div>
                             </div>
                         </div>
-                        <div class="form-row mt-2">
-                            <div class="form-group col-md-3">
-                                <label for="inputDtVencimento" class="font-weight-bold">Data de vencimento</label>
-                                <input type="date" class="form-control" id="inputDtVencimento" name="data_vencimento" value="{{despesa.data_vencimento}}">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="selectFormaPagamento" class="font-weight-bold">Forma de pagamento</label>
-                                <select class="form-control" id="selectFormaPagamento" name="formaPagamento">
-                                    {% for item in formasPagamento %}
-                                        <option 
-                                            {% if item.key == despesa.formaPagamento  %}
-                                                selected
-                                            {% endif %}
-                                            value="{{item.key}}">{{item.value}}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="selectSituacao" class="font-weight-bold">Situação</label>
-                                <select class="form-control" id="selectSituacao" name="situacao">
-                                    {% for item in situacoes %}
-                                        <option 
-                                            {% if item.key == despesa.situacao  %}
-                                                selected
-                                            {% endif %}
-                                            value="{{item.key}}">{{item.value}}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputDtPagamento" class="font-weight-bold">Data de pagamento</label>
-                                <input type="date" class="form-control" id="inputDtPagamento" name="data_pagamento" value="{{despesa.data_pagamento}}">
-                            </div>
-                        </div>
-                    </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg mt-3">Cadastrar</button>
-                </form>
-            </div>
+                        <button type="submit" class="btn btn-primary btn-lg mt-3">
+                        {% if despesa.id %}  
+                            Editar
+                        {% else %}
+                            Cadastrar
+                        {% endif %} 
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                    <h4 class="mt-4">Não existe despesa para o ID informado</h4>
+                {% endif %} 
         </div>
     </body>
 </html>
