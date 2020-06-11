@@ -25,7 +25,7 @@ SECRET_KEY = '(1duhttuh4ntm9^i(rsmvxebhf%-cb&k=2#-20d(^y2zdi5d2m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['python-trab-final.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
