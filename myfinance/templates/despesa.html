@@ -38,7 +38,7 @@
                     <a class="nav-link active" href="/despesa/nova"><h4>Nova despesa</h4></a>
                 </li>
                 <li class="nav-item border">
-                    <a class="nav-link" href="/receita/nova"><h4>Nova receita</h4></a>
+                    <a class="nav-link" href="/receita/"><h4>Nova receita</h4></a>
                 </li>
                 <li class="nav-item border">
                     <a class="nav-link" href="/relatorio/despesas"><h4>Contas a pagar</h4></a>
@@ -115,7 +115,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputDtPagamento" class="font-weight-bold">Data de pagamento</label>
-                                <input type="date" class="form-control" id="inputDtPagamento" name="data_pagamento">
+                                <input type="date" class="form-control" id="inputDtPagamento" name="data_pagamento" value="{{despesa.data_pagamento}}">
                             </div>
                         </div>
                     </div>

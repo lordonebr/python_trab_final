@@ -17,8 +17,6 @@ def index(request):
             saldoAtual = fluxo[periodo]['saldoFinal']
             break
 
-        # iterate fluxo
-        # https://stackoverflow.com/questions/16616260/django-template-context-for-loop-traversal
         context = {'getSaldoInicial' : saldoInicial, 'fluxo' : fluxo, 'saldoAtual' : saldoAtual}
         #print(f"""context= {context}""")
         return render(request, 'index.html', context)
