@@ -71,35 +71,117 @@ https://python-trab-final.herokuapp.com/
 ### Páginas
 * Página inicial:
 ```
-  http://localhost:8000/
+  ...
+  EX: http://localhost:8000/
 ```    
   
   * Cadastrar despesa:
 ```
-  http://localhost:8000/despesa/
+  .../despesa/
 ```    
 
   * Editar despesa de id = id_despesa:
 ```
-  http://localhost:8000/despesa/{id_despesa}/
+  .../despesa/{id_despesa}/
 ```   
 
   * Cadastrar receita:
 ```
-  http://localhost:8000/receita/
+  .../receita/
 ```    
 
   * Editar receita de id = id_receita:
 ```
-  http://localhost:8000/receita/{id_receita}/
+  .../receita/{id_receita}/
 ```   
 
   * Tela relatório: contas a pagar
 ```
-  http://localhost:8000/relatorio/despesas
+  .../relatorio/despesas
 ```  
 
   * Tela relatório: contas a receber
 ```
-  http://localhost:8000/relatorio/receitas
+  .../relatorio/receitas
+```  
+
+### Rotas
+* Rota para obter a página principal:
+```
+  GET ...
+```    
+
+* Rota para setar um novo valor de saldo inicial no banco de dados:
+```
+  POST ...
+```    
+
+* Rota para abrir a tela de criar despesa:
+```
+  GET .../despesa/
+```    
+
+* Rota para criar uma nova despesa no banco de dados:
+```
+  POST .../despesa/
+```    
+
+* Rota para abrir a tela de editar uma despesa de um id:
+```
+  GET .../despesa/<int:id_despesa>
+```    
+
+* Rota para editar uma despesa de um id no banco de dados:
+```
+  POST .../despesa/<int:id_despesa>
+```   
+
+* Rota para deletar uma despesa de um id do banco de dados:
+```
+  DELETE .../despesa/<int:id_despesa>
+```  
+
+* Rota para abrir a tela de criar receita:
+```
+  GET .../receita/
+```    
+
+* Rota para criar uma nova receita no banco de dados:
+```
+  POST .../receita/
+```    
+
+* Rota para abrir a tela de editar uma receita de um id:
+```
+  GET .../receita/<int:id_receita>
+```    
+
+* Rota para editar uma receita de um id no banco de dados:
+```
+  POST .../receita/<int:id_receita>
+```   
+
+* Rota para deletar uma receita de um id do banco de dados:
+```
+  DELETE .../receita/<int:id_receita>
+```  
+
+* Rota para abrir a tela do relatorio de contas a pagar:
+```
+  GET .../relatorio/despesas
+```  
+
+* Rota para filtrar o relatorio de contas a pagar por uma data de vencimento, retorna uma página:
+```
+  POST .../relatorio/despesas/filtro
+```  
+
+* Rota para abrir a tela do relatorio de contas a receber:
+```
+  GET .../relatorio/receitas
+```  
+
+* Rota para filtrar o relatorio de contas a receber por uma data de expectativa, retorna uma página:
+```
+  POST .../relatorio/receitas/filtro
 ```  
