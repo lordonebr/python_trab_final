@@ -68,9 +68,38 @@ https://python-trab-final.herokuapp.com/
 ![alt text](https://github.com/lordonebr/python_trab_final/blob/master/img/TelaRelatorioReceber.png?raw=true)
   
 
-### Rotas
+### Páginas
 * Página inicial:
 ```
   http://localhost:8000/
 ```    
   
+  * Cadastrar despesa:
+```
+  http://localhost:8000/despesa/
+```    
+
+  * Editar despesa de id = id_despesa:
+```
+  http://localhost:8000/despesa/{id_despesa}/
+```   
+
+  * Cadastrar receita:
+```
+  http://localhost:8000/receita/
+```    
+
+  * Editar receita de id = id_receita:
+```
+  http://localhost:8000/receita/{id_receita}/
+```   
+
+  * Tela relatório: contas a pagar
+```
+  http://localhost:8000/relatorio/despesas
+```  
+
+  * Tela relatório: contas a receber
+```
+  http://localhost:8000/relatorio/receitas
+```  
