@@ -12,7 +12,7 @@ Trabalho final de Python: sistema de finanças pessoais
 
 Aluno: André Guilherme de Almeida Santos
 
-### URL do site publicado:
+### URL do site publicado (obs: o heroku pode limpar o banco de dados de tempos em tempos automaticamente):
 https://python-trab-final.herokuapp.com/
   
   
