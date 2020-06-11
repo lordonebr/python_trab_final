@@ -15,6 +15,29 @@ Aluno: André Guilherme de Almeida Santos
 ### URL do site publicado (obs: o heroku pode limpar o banco de dados de tempos em tempos automaticamente):
 https://python-trab-final.herokuapp.com/
   
+
+### Comandos básicos
+
+- COMANDO para instalar dependências:
+```
+  pip install -r requirements.txt
+```  
+
+- COMANDO para criar a migração
+```
+  python manage.py makemigrations people
+```  
+
+- COMANDO para executar a migração:
+```
+  python manage.py migrate people
+```  
+
+- COMANDO para subir o servidor na porta 8000:
+```
+  python manage.py runserver
+```  
+  
   
 ### Imagens do projeto
 - Tela principal sem receitas e despesas cadastradas
@@ -44,22 +67,6 @@ https://python-trab-final.herokuapp.com/
 - Tela do relatório de contas a receber
 ![alt text](https://github.com/lordonebr/python_trab_final/blob/master/img/TelaRelatorioReceber.png?raw=true)
   
-### Comandos básicos
-
-- COMANDO para criar a migração
-```
-  python manage.py makemigrations people
-```  
-
-- COMANDO para executar a migração:
-```
-  python manage.py migrate people
-```  
-
-- COMANDO para subir o servidor na porta 8000:
-```
-  python manage.py runserver
-```  
 
 ### Rotas
 * Página inicial:
