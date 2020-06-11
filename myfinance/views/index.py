@@ -9,7 +9,27 @@ import operator
 @csrf_exempt
 def index(request):
     if(request.method=="GET"):
-        saldoInicial = loadSaldoInicial()
+        context = carregaContextFluxo()
+        return render(request, 'index.html', context)
+    elif(request.method=="POST"):
+        result = Conf.objects.all()
+        message = 'Saldo inicial criado com sucesso!'
+        if(result.count() > 0):
+            message = 'Saldo inicial alterado com sucesso!'
+            for confObj in result:
+                confObj.delete()
+
+        conf = Conf(saldoInicial=request.POST['saldoInicial'])
+        conf.save()
+        context = carregaContextFluxo()
+        context["message"] = message
+        return render(request, 'index.html', context)
+
+# carrega o context do fluxo de caixa
+def carregaContextFluxo():
+    saldoInicial = carregaSaldoInicial()
+    context = {'saldoInicial' : saldoInicial}
+    if(saldoInicial != None):
         saldoAtual = saldoInicial
 
         fluxo = initFluxo(saldoInicial)
@@ -17,22 +37,14 @@ def index(request):
             saldoAtual = fluxo[periodo]['saldoFinal']
             break
 
-        context = {'getSaldoInicial' : saldoInicial, 'fluxo' : fluxo, 'saldoAtual' : saldoAtual}
-        #print(f"""context= {context}""")
-        return render(request, 'index.html', context)
-    elif(request.method=="POST"):
-        saldoInicial = request.POST['saldoInicial']
-        print(f"""saldoInicial= {saldoInicial}""")
-        conf = Conf(saldoInicial=saldoInicial)
-        conf.save()
+        context['fluxo'] = fluxo
+        context['saldoAtual'] = saldoAtual
 
-        saldoInicial = loadSaldoInicial()
-        
-        context = {'getSaldoInicial' : saldoInicial}
-        print(f"""context= {context}""")
-        return render(request, 'index.html', context)
+    print(f"""context= {context}""")
+    return context
 
-def loadSaldoInicial():
+# se existir carrega o saldo inicial
+def carregaSaldoInicial():
     saldoInicial = None
     searchSaldoInicial = Conf.objects.all()
     if(searchSaldoInicial.count() >= 1):
@@ -149,6 +161,7 @@ def setDespesasOrder(fluxo):
 
     return fluxo
 
+# adiciona para cada despesa paga e cada receita recebida, o saldo acumulado
 def setSaldoAcumulado(fluxo, saldoInicial):
     valorAcumulado = saldoInicial
     for periodo in reversed(fluxo):
