@@ -40,7 +40,7 @@ def carregaContextFluxo():
         context['fluxo'] = fluxo
         context['saldoAtual'] = saldoAtual
 
-    print(f"""context= {context}""")
+    #print(f"""context= {context}""")
     return context
 
 # se existir carrega o saldo inicial
@@ -58,6 +58,7 @@ def initFluxo(saldoInicial):
         return {}
 
     fluxo = {}
+    fluxo = createOrderPeriodos(fluxo)
     fluxo = setResumoReceitas(fluxo)
     fluxo = setResumoDespesas(fluxo)
     fluxo = setSaldoIniFinLuc(fluxo, saldoInicial)
@@ -81,14 +82,52 @@ def createFluxoVazio(fluxo, periodo):
                         "despesas" : []}
     return fluxo
 
+# cria a ordem inversa dos periodos para ser apresentada na página
+def createOrderPeriodos(fluxo):
+    lstDates = []
+    resultReceitas1 = Receita.objects.order_by('-data_recebimento')
+    for receita in resultReceitas1:
+        if(receita.data_recebimento):
+            if(receita.data_recebimento not in lstDates):
+                lstDates.append(receita.data_recebimento)
+
+    resultReceitas2 = Receita.objects.order_by('-data_expectativa')
+    for receita in resultReceitas2:
+        if(receita.data_expectativa):
+            if(receita.data_expectativa not in lstDates):
+                lstDates.append(receita.data_expectativa)
+
+    resultDespesas1 = Despesa.objects.order_by('-data_pagamento')
+    for despesa in resultDespesas1:
+        if(despesa.data_pagamento):
+            if(despesa.data_pagamento not in lstDates):
+                lstDates.append(despesa.data_pagamento)
+
+    resultDespesas2 = Despesa.objects.order_by('-data_vencimento')
+    for despesa in resultDespesas2:
+        if(despesa.data_vencimento):
+            if(despesa.data_vencimento not in lstDates):
+                lstDates.append(despesa.data_vencimento)
+
+    #print(f"""lstDates= {lstDates}""")
+    sorted_list = sorted(lstDates)
+    for dateCheck in reversed(sorted_list):
+        periodo = '%s/%s' % (dateCheck.strftime("%m"), dateCheck.strftime("%Y"))
+        if periodo not in fluxo:
+            fluxo = createFluxoVazio(fluxo, periodo)
+            #print(f"""periodo= {periodo}""")
+    
+    return fluxo
+
 # recupera as seguintes informações do mês: saldo recebido, saldo a receber
 def setResumoReceitas(fluxo):
     resultReceitas = Receita.objects.all().order_by('-data_expectativa')
     for receita in resultReceitas:
-        periodo = '%s/%s' % (receita.data_expectativa.strftime("%m"), receita.data_expectativa.strftime("%Y"))
-        if periodo not in fluxo:
-            fluxo = createFluxoVazio(fluxo, periodo)
-        
+        if(receita.data_recebimento):
+            periodo = '%s/%s' % (receita.data_recebimento.strftime("%m"), receita.data_recebimento.strftime("%Y"))
+        else:
+            periodo = '%s/%s' % (receita.data_expectativa.strftime("%m"), receita.data_expectativa.strftime("%Y"))
+
         if(receita.situacao == "PR"):
             fluxo[periodo]['saldoRecebido'] = fluxo[periodo]['saldoRecebido'] + receita.valor
         else:
@@ -100,10 +139,11 @@ def setResumoReceitas(fluxo):
 def setResumoDespesas(fluxo):
     resultDespesas = Despesa.objects.all().order_by('-data_vencimento')
     for despesa in resultDespesas:
-        periodo = '%s/%s' % (despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%Y"))
-        if periodo not in fluxo:
-            fluxo = createFluxoVazio(fluxo, periodo)
-
+        if(despesa.data_pagamento):
+            periodo = '%s/%s' % (despesa.data_pagamento.strftime("%m"), despesa.data_pagamento.strftime("%Y"))
+        else:
+            periodo = '%s/%s' % (despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%Y"))
+        
         if(despesa.situacao == "PG"):
             fluxo[periodo]['saldoPago'] = fluxo[periodo]['saldoPago'] + despesa.valor
         else:
@@ -138,6 +178,7 @@ def setReceitasOrder(fluxo):
         dtExpectativa = '%s/%s/%s' % (receita.data_expectativa.strftime("%d"), receita.data_expectativa.strftime("%m"), receita.data_expectativa.strftime("%Y"))
         receita.data_expectativa = dtExpectativa
         if(receita.data_recebimento):
+            periodo = '%s/%s' % (receita.data_recebimento.strftime("%m"), receita.data_recebimento.strftime("%Y"))
             dtrecebimento = '%s/%s/%s' % (receita.data_recebimento.strftime("%d"), receita.data_recebimento.strftime("%m"), receita.data_recebimento.strftime("%Y"))
             receita.data_recebimento = dtrecebimento
 
@@ -154,6 +195,7 @@ def setDespesasOrder(fluxo):
         dtVencimento = '%s/%s/%s' % (despesa.data_vencimento.strftime("%d"), despesa.data_vencimento.strftime("%m"), despesa.data_vencimento.strftime("%Y"))
         despesa.data_vencimento = dtVencimento
         if(despesa.data_pagamento):
+            periodo = '%s/%s' % (despesa.data_pagamento.strftime("%m"), despesa.data_pagamento.strftime("%Y"))
             dtpagamento = '%s/%s/%s' % (despesa.data_pagamento.strftime("%d"), despesa.data_pagamento.strftime("%m"), despesa.data_pagamento.strftime("%Y"))
             despesa.data_pagamento = dtpagamento
         
